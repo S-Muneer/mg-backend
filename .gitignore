@@ -1,0 +1,18 @@
+# Dependencies
+node_modules/
+
+# Environment
+.env
+
+# Uploads
+uploads/
+
+# Logs
+*.log
+
+# Prisma generated
+node_modules/.prisma
+
+# OS
+.DS_Store
+Thumbs.db

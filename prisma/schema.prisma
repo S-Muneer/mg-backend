@@ -1,0 +1,81 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+// The datasource URL is provided via the `DATABASE_URL` environment variable.
+// This is required for Prisma to connect to the database at runtime and
+// for `prisma generate`/`prisma db push` to work correctly.
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Admin {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  password  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  name      String
+  email     String   @unique
+  password  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+  orders    Order[]
+}
+
+model Product {
+  id          Int         @id @default(autoincrement())
+  name        String
+  category    String      @default("General")
+  price       Float
+  image       String
+  description String?
+  sizes       String[]    @default([])
+  inStock     Boolean     @default(true)
+  rating      Float       @default(4.2)
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @default(now()) @updatedAt
+  orderItems  OrderItem[]
+}
+
+model Order {
+  id              Int          @id @default(autoincrement())
+  orderNumber     String       @unique
+  userId          Int?
+  customerName    String
+  customerEmail   String
+  shippingAddress Json
+  paymentMethod   String       @default("COD")
+  status          OrderStatus  @default(PENDING)
+  total           Float
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @default(now()) @updatedAt
+  user            User?        @relation(fields: [userId], references: [id], onDelete: SetNull)
+  items           OrderItem[]
+}
+
+model OrderItem {
+  id              Int      @id @default(autoincrement())
+  orderId         Int
+  productId       Int?
+  productName     String
+  priceAtPurchase Float
+  quantity        Int
+  size            String?
+  createdAt       DateTime @default(now())
+  order           Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product         Product? @relation(fields: [productId], references: [id], onDelete: SetNull)
+}
+
+enum OrderStatus {
+  PENDING
+  CONFIRMED
+  SHIPPED
+  DELIVERED
+  CANCELLED
+}
