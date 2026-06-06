@@ -30,6 +30,12 @@ app.use(
 );
 app.use(express.json({ limit: "1mb" }));
 
+app.get("/", (req, res) => {
+  res.json({
+    message: "MG Fashions Backend Running 🚀"
+  });
+});
+
 function toNumber(value) {
   const parsed = Number(value);
   return Number.isFinite(parsed) ? parsed : null;
@@ -761,9 +767,13 @@ async function startServer() {
 
   app.listen(port, () => {
     // Backend started successfully
+        console.log(`Backend running on port ${port}`);
+
   });
 }
-
+if (require.main === module) {
+  startServer();
+}
 module.exports = {
   app,
   startServer,

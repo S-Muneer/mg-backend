@@ -4,7 +4,8 @@
   "main": "index.js",
   "scripts": {
     "dev": "node --watch index.js",
-    "start": "node index.js",
+    "start": "node index.js || node server.js",
+    "build": "npm audit fix --audit-level=moderate || true && prisma generate",
     "prisma:generate": "prisma generate",
     "prisma:push": "prisma db push",
     "test": "echo \"Error: no test specified\" && exit 1"

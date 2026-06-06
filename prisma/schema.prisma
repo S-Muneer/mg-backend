@@ -2,12 +2,8 @@ generator client {
   provider = "prisma-client-js"
 }
 
-// The datasource URL is provided via the `DATABASE_URL` environment variable.
-// This is required for Prisma to connect to the database at runtime and
-// for `prisma generate`/`prisma db push` to work correctly.
 datasource db {
   provider = "postgresql"
- // url      = env("DATABASE_URL")
 }
 
 model Admin {
