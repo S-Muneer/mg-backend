@@ -18,16 +18,47 @@ const app = express();
 const adminEventClients = new Set();
 
 const corsOptions = {
-  origin(origin, callback) {
-    if (!origin || corsOrigins.includes("*") || corsOrigins.includes(origin)) {
+  origin: function (origin, callback) {
+
+    // allow server-to-server and Postman
+    if (!origin) {
       return callback(null, true);
     }
-    return callback(new Error("Origin not allowed by CORS"));
+
+    // allow your frontend domains
+    const allowedOrigins = [
+      "http://localhost:5173",
+      "http://127.0.0.1:5173",
+      "https://mg-fashions.vercel.app"
+    ];
+
+    if (allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    }
+
+    console.log("Blocked CORS origin:", origin);
+    return callback(null, false);
   },
+
   credentials: true,
-  methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization"],
+
+  methods: [
+    "GET",
+    "POST",
+    "PUT",
+    "PATCH",
+    "DELETE",
+    "OPTIONS"
+  ],
+
+  allowedHeaders: [
+    "Content-Type",
+    "Authorization"
+  ]
 };
+
+app.use(cors(corsOptions));
+app.options("*", cors(corsOptions));
 
 app.use(cors(corsOptions));
 app.options(/.*/, cors(corsOptions));
