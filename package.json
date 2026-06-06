@@ -4,7 +4,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "node --watch index.js",
-    "start": "node index.js || node server.js",
+    "start": "node index.js",
     "build": "npm audit fix --audit-level=moderate || true && prisma generate",
     "prisma:generate": "prisma generate",
     "prisma:push": "prisma db push",

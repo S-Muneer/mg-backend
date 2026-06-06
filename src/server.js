@@ -17,17 +17,20 @@ const { port, corsOrigins, defaultProductImage, jwtSecret } = require("./config"
 const app = express();
 const adminEventClients = new Set();
 
-app.use(
-  cors({
-    origin(origin, callback) {
-      if (!origin || corsOrigins.includes("*") || corsOrigins.includes(origin)) {
-        return callback(null, true);
-      }
-      return callback(new Error("Origin not allowed by CORS"));
-    },
-    credentials: true,
-  })
-);
+const corsOptions = {
+  origin(origin, callback) {
+    if (!origin || corsOrigins.includes("*") || corsOrigins.includes(origin)) {
+      return callback(null, true);
+    }
+    return callback(new Error("Origin not allowed by CORS"));
+  },
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+};
+
+app.use(cors(corsOptions));
+app.options(/.*/, cors(corsOptions));
 app.use(express.json({ limit: "1mb" }));
 
 app.get("/", (req, res) => {
@@ -750,16 +753,18 @@ app.post(
   }
 );
 
-app.use((err, _req, res, _next) => {
-  const isNotFound = err.code === "P2025";
-  const statusCode = isNotFound ? 404 : 500;
-  const message = isNotFound
-    ? "Requested resource was not found"
-    : err.message || "Internal server error";
-  // eslint-disable-next-line no-console
-  console.error(err);
-  res.status(statusCode).json({ message });
-});
+// app.use((err, _req, res, _next) => {
+//   const isNotFound = err.code === "P2025";
+//   const statusCode = isNotFound ? 404 : 500;
+//   const message = isNotFound
+//     ? "Requested resource was not found"
+//     : err.message || "Internal server error";
+//   // eslint-disable-next-line no-console
+//   console.error(err);
+//   res.status(statusCode).json({ message });
+// });
+
+// new code to handle uncaught errors and rejections
 
 async function startServer() {
   await prisma.$connect();

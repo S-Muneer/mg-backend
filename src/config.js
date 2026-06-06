@@ -5,12 +5,14 @@ const DEFAULT_CORS_ORIGINS = [
 ];
 
 function parseOrigins(raw) {
-  if (!raw) return DEFAULT_CORS_ORIGINS;
+  const parsed = raw
+    ? raw
+        .split(",")
+        .map((origin) => origin.trim())
+        .filter(Boolean)
+    : [];
 
-  return raw
-    .split(",")
-    .map((origin) => origin.trim())
-    .filter(Boolean);
+  return [...new Set([...DEFAULT_CORS_ORIGINS, ...parsed])];
 }
 
 module.exports = {
