@@ -7,7 +7,7 @@ generator client {
 // for `prisma generate`/`prisma db push` to work correctly.
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
+ // url      = env("DATABASE_URL")
 }
 
 model Admin {
